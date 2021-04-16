@@ -6,11 +6,13 @@ class SearchForm extends React.Component {
   };
 
   handleChange = (evt) => {
-    this.setState({ formInput: evt.target.value });
+    const { value } = evt.target;
+    this.setState({ formInput: value });
   };
 
   handleSubmit = (evt) => {
     evt.preventDefault();
+    console.log(this);
     this.props.setSearchTerm(this.state.formInput);
   };
 

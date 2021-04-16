@@ -1,6 +1,5 @@
 import React from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import SearchForm from "./SearchForm";
 
 class StoryList extends React.Component {
@@ -18,16 +17,18 @@ class StoryList extends React.Component {
     console.log("STORIES", this.state.stories);
   }
 
-  async componentDidUpdate() {
-    const response = await axios.get(
-      `https://hn.algolia.com/api/v1/search?query=${this.state.query}`
-    );
-    const { hits } = response.data;
-    this.setState({ stories: hits });
+  async componentDidUpdate(prevProps, prevState) {
+    if (this.state.query !== prevState.query) {
+      const response = await axios.get(
+        `https://hn.algolia.com/api/v1/search?query=${this.state.query}`
+      );
+      const { hits } = response.data;
+      this.setState({ ...this.state, stories: hits });
+    }
   }
 
   setSearchTerm = (searchTerm) => {
-    this.setState({ query: searchTerm });
+    this.setState({ ...this.state, query: searchTerm });
   };
 
   render() {
@@ -35,7 +36,7 @@ class StoryList extends React.Component {
       <div>
         <SearchForm setSearchTerm={this.setSearchTerm} />
         {this.state.stories.map((story) => (
-          <p>
+          <p key={story.title}>
             <a href={`${story.url}`}>{story.title}</a>
           </p>
         ))}
